@@ -1,0 +1,213 @@
+openapi: 3.0.0
+info:
+  title: E-Commerce API
+  version: 1.0.0
+  description: E-commerce API documentation
+
+servers:
+  - url: http://localhost:3000
+    description: Local server
+
+tags:
+  - name: Products
+    description: Product management
+  - name: Authentication
+    description: User authentication
+
+security:
+  - bearerAuth: []
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token for authentication
+
+  schemas:
+    Product:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Product ID
+        name:
+          type: string
+          description: Product name
+        price:
+          type: number
+          description: Product price
+        category:
+          type: string
+          description: Product category
+        archived:
+          type: boolean
+          description: Indicates if the product is archived
+
+paths:
+  /api/products:
+    get:
+      tags:
+        - Products
+      summary: Get all products
+      security:
+        - bearerAuth: []  # Require JWT token for this route
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+
+    post:
+      tags:
+        - Products
+      summary: Create a new product
+      security:
+        - bearerAuth: []  # Require JWT token for this route
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                price:
+                  type: number
+                category:
+                  type: string
+      responses:
+        '201':
+          description: Product created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  message:
+                    type: string
+                    example: Product created successfully
+
+  /api/products/{id}:
+    get:
+      tags:
+        - Products
+      summary: Get product by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: The ID of the product to retrieve
+      security:
+        - bearerAuth: []  # Require JWT token for this route
+      responses:
+        '200':
+          description: Product details by ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+
+    put:
+      summary: Update an existing product
+      tags: [Products]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The product ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+      responses:
+        '200':
+          description: Product updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '404':
+          description: Product not found
+        '401':
+          description: Unauthorized
+        '500':
+          description: Server error
+
+  /api/products/{id}/archive:
+    patch:
+      summary: Archive a product
+      tags: [Products]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The product ID
+      responses:
+        '200':
+          description: Product archived
+        '404':
+          description: Product not found
+        '401':
+          description: Unauthorized
+        '500':
+          description: Server error
+
+  /api/users/login:
+    post:
+      summary: Login a user
+      description: Authenticate a user and return a JWT token.
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: The user's email.
+                password:
+                  type: string
+                  description: The user's password.
+      responses:
+        '200':
+          description: A JWT token.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    description: JWT token.
+        '400':
+          description: Invalid credentials.
+        '500':
+          description: Server error.
