@@ -43,6 +43,7 @@ connectToMongoDB();
 const userRoutes = require('./routes/userRoutes');
 const productRoutes = require('./routes/productRoutes');
 const cartRoutes = require('./routes/cartRoutes');
+const categoryRoutes = require('./routes/categoryRoutes');
 
 // Middleware
 app.use(bodyParser.json());
@@ -52,6 +53,7 @@ app.use(cors())
 app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/cart', cartRoutes);
+app.use('/api/category', categoryRoutes);
 
 
 // Error Handling Middleware

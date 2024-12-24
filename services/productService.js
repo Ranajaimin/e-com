@@ -13,7 +13,9 @@ exports.getFilterProducts = async (category) => {
     try {
         const products = await Product.find({
             product_category_tree: { $regex: category, $options: 'i' }
-        }).limit(10);
+        })
+            .select('product_name image description retail_price discounted_price')
+            .limit(20);
         return products
     }
     catch (error) {

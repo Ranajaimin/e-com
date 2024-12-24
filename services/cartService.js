@@ -7,7 +7,7 @@ exports.addCart = async (userId, productId, quantity, price) => {
         if (!cart) {
             // If no active cart exists, create a new one
             cart = new Cart({ user: userId, items: [{ product: productId, quantity, price }] });
-            console.log(cart)
+            // console.log(cart)
         } else {
             // Check if the product is already in the cart
             const itemIndex = cart.items.findIndex(item => item.product.toString() === productId);
