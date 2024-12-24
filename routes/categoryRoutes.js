@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const categoryController = require('../controllers/categoryController');
 const Cart = require('../models/cartModel');
+const auth = require('../middlewares/auth.middleware');
 
 
 router.get('/create', auth, categoryController.createCategory);
